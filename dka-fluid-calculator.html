@@ -1,123 +1,267 @@
 <!DOCTYPE html>
-<html>
+<html lang="en-US">
   <head>
+    <title>DKA IV Fluids Calculator</title>
+    <link rel="icon" href="https://www.etch.com/imgs/favicon.ico" />
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <meta name="author" content="Corey White" />
     <style>
       * {
         font-family: arial, sans-serif;
+        color: hsl(0, 0%, 17%);
       }
-      div {
-        position: relative;
-        max-width: 35rem;
-        margin: 2rem auto;
+      html {
+        background-color: hsl(210, 15%, 98%);
+      }
+      #pageContainer {
+        display: flex;
+      }
+      #cardContainer {
+        width: 30rem;
+        margin: 2rem auto auto;
+        box-shadow: 0 2px 4px hsla(0, 0%, 0%, 0.2);
+        padding: 0 2rem 1rem;
+        border-radius: 0.25rem;
+        background-color: white;
+      }
+      #tableContainer {
+        margin: 1rem auto 1rem;
+        border: 1px solid lightgray;
+        border-radius: 0.25rem;
+        background-color: white;
+        width: 100%;
+      }
+      #calculateButton {
+        height: 3rem;
+        border-style: none;
+        border-radius: 0.25rem;
+        padding: 0.75rem;
+        background: hsl(207, 100%, 27%);
+        color: white;
+        font-size: 1rem;
+        cursor: pointer;
+        margin: 1rem 0;
+      }
+      #header {
+        display: flex;
+        align-items: center;
+        margin: 0.5rem 0;
+      }
+      h3 {
+        font-size: 1.5rem;
+        margin: 1rem 0.5rem;
+      }
+      p {
+        color: hsl(0, 0%, 45%);
+        margin: 0.25rem 0 1rem 0;
+        width: 8rem;
       }
       input {
-        margin-left: 2rem;
-      }
-      #totalRateInput {
-        width: 4rem;
-        margin: 0;
         padding: 0;
-        box-shadow: inset 0 0 0 transparent;
-        border-radius: 0;
+        width: 4rem;
+        font-size: 1rem;
       }
       table {
         vertical-align: middle;
         border-collapse: collapse;
-        margin-top: 1rem;
+        margin: 0 auto 2rem;
+        width: 100%;
+        border: none;
       }
       th {
+        background-color: hsl(210, 15%, 98%);
         text-transform: uppercase;
         text-align: center;
         font-weight: 300;
-        border: 1px solid black;
+        border: none;
+        padding: 0.25rem;
       }
       td {
         text-align: right;
-        border: 1px solid #cccccc;
-        white-space: nowrap;
+        padding: 4px;
+        border: none;
+        border-radius: 0.25rem;
       }
-      td:before {
+      .rate::before {
         content: "";
         display: block;
-        width: 6em;
+        width: 4rem;
       }
     </style>
   </head>
   <body>
+    <div id="pageContainer">
+      <div id="cardContainer">
+        <div id="header">
+          <img
+            src="https://upload.wikimedia.org/wikipedia/en/8/86/EastTNChildrensHospitalLogo.png"
+            width="40px"
+            height="40px"
+          />
+          <h3>DKA IV Fluids Calculator</h3>
+        </div>
+        <label for="totalRateInput">
+          Total Rate*:
+        </label>
+        <br />
+        <input type="text" id="totalRateInput" />
+        ml/hr
+        <br />
+        <p id="maxLabel">*max: 175 mL/hr</p>
+        <label for="glucoseInput">
+          Blood Glucose:
+        </label>
+        <br />
+        <input type="text" id="glucoseInput" />
+        mg/dL
+        <br />
+        <button id="calculateButton" type="button" onclick="handleClick()">
+          Calculate
+        </button>
+        <div id="tableContainer">
+          <table>
+            <tr>
+              <th style="width: 5rem;">Blood Glucose</th>
+              <th colspan="2">Saline<br />Rate</th>
+              <th colspan="2">Dextrose<br />Rate</th>
+            </tr>
+            <tr id=">300">
+              <td style="text-align: right">> 300</td>
+              <td style="border-right:none;">100% =</td>
+              <td class="rate" data-multiplier="1" style="border-left:none;">
+                mL/hr
+              </td>
+              <td style="border-right:none;">0% =</td>
+              <td class="rate" data-multiplier="0" style="border-left:none;">
+                mL/hr
+              </td>
+            </tr>
+            <tr id="250-299">
+              <td style="text-align: right">250-299</td>
+              <td style="border-right:none;">75% =</td>
+              <td class="rate" data-multiplier="0.75" style="border-left:none;">
+                mL/hr
+              </td>
+              <td style="border-right:none;">25% =</td>
+              <td class="rate" data-multiplier="0.25" style="border-left:none;">
+                mL/hr
+              </td>
+            </tr>
+            <tr id="200-249">
+              <td style="text-align: right">200-249</td>
+              <td style="border-right:none;">50% =</td>
+              <td class="rate" data-multiplier="0.5" style="border-left:none;">
+                mL/hr
+              </td>
+              <td style="border-right:none;">
+                50% =
+              </td>
+              <td class="rate" data-multiplier="0.5" style="border-left:none;">
+                mL/hr
+              </td>
+            </tr>
+            <tr id="150-199">
+              <td style="text-align: right">150-199</td>
+              <td style="border-right:none;">25% =</td>
+              <td class="rate" data-multiplier="0.25" style="border-left:none;">
+                mL/hr
+              </td>
+              <td style="border-right:none;">75% =</td>
+              <td class="rate" data-multiplier="0.75" style="border-left:none;">
+                mL/hr
+              </td>
+            </tr>
+            <tr id="< 150">
+              <td style="text-align: right">&lt; 150</td>
+              <td style="border-right:none;">0% =</td>
+              <td class="rate" data-multiplier="0" style="border-left:none;">
+                mL/hr
+              </td>
+              <td style="border-right:none;">100% =</td>
+              <td class="rate" data-multiplier="1" style="border-left:none;">
+                mL/hr
+              </td>
+            </tr>
+            <tr>
+              <td>Precipitous drop of > 100 mg/dL in 1 hr</td>
+              <td colspan="2">
+                Decrease by 25%<br />
+                of total fluid rate
+              </td>
+              <td colspan="2">
+                Increase by 25%<br />
+                of total fluid rate
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
     <script>
+      var rate = document.getElementById("totalRateInput");
+      var glucose = document.getElementById("glucoseInput");
+      rate.addEventListener("keyup", function(event) {
+        if (event.keyCode === 13) {
+          event.preventDefault();
+          document.getElementById("calculateButton").click();
+        }
+      });
+      glucose.addEventListener("keyup", function(event) {
+        if (event.keyCode === 13) {
+          event.preventDefault();
+          document.getElementById("calculateButton").click();
+        }
+      });
       function handleClick() {
+        var glucoseInput = document.getElementById("glucoseInput").value;
         var totalRateInput = document.getElementById("totalRateInput").value;
         var rates = document.getElementsByClassName("rate");
-        l = rates.length;
-        for (i = 0; i < l; i++) {
-          rates[i].innerHTML =
-            rates[i].getAttribute("multiplier") * totalRateInput + " mL/hr";
+        var bg = "hsl(210, 37%, 90%)";
+        for (i = 0; i < rates.length; i++) {
+          if (totalRateInput && totalRateInput < 176 && glucoseInput) {
+            rates[i].innerHTML =
+              rates[i].getAttribute("data-multiplier") * totalRateInput +
+              " mL/hr";
+          } else {
+            rates[i].innerHTML = " mL/hr";
+          }
+        }
+        function resetStyles() {
+          var rows = document.getElementsByTagName("TR");
+          document.getElementById("maxLabel").style.backgroundColor = "white";
+          for (i = 0; i < rows.length; i++) {
+            rows[i].style.backgroundColor = "white";
+            rows[i].style.fontWeight = "400";
+          }
+        }
+        function highlightAndBold(row) {
+          resetStyles();
+          document.getElementById(row).style.backgroundColor = bg;
+          document.getElementById(row).style.fontWeight = "600";
+        }
+        if (totalRateInput < 176 && glucoseInput) {
+          if (glucoseInput > 300) {
+            highlightAndBold(">300");
+          } else if (glucoseInput > 250) {
+            highlightAndBold("250-299");
+          } else if (glucoseInput > 200) {
+            highlightAndBold("200-249");
+          } else if (glucoseInput > 150) {
+            highlightAndBold("150-199");
+          } else {
+            highlightAndBold("< 150");
+          }
+        } else if (totalRateInput > 175) {
+          resetStyles();
+          document.getElementById("maxLabel").style.backgroundColor = "pink";
+        } else {
+          resetStyles();
         }
       }
     </script>
-    <div>
-      <h3>DKA Fluid Calculator</h3>
-      <form>
-        <label for="totalRate">
-          Total Rate:
-          <input type="text" id="totalRateInput" />
-          ml/hr
-          <button type="button" onclick="handleClick()">Calculate</button>
-        </label>
-      </form>
-      <table>
-        <tr>
-          <th>Blood Glucose</th>
-          <th colspan="2">Saline Rate</th>
-          <th colspan="2">Dextrose Rate</th>
-        </tr>
-
-        <tr>
-          <td style="text-align: right">>300</td>
-          <td style="border-right:none;">100% =</td>
-          <td class="rate" multiplier="1" style="border-left:none;">mL/hr</td>
-          <td style="border-right:none;">0% =</td>
-          <td class="rate" multiplier="0" style="border-left:none;">mL/hr</td>
-        </tr>
-        <tr>
-          <td style="text-align: right">250-299</td>
-          <td style="border-right:none;">75% =</td>
-          <td class="rate" multiplier="0.75" style="border-left:none;">
-            mL/hr
-          </td>
-          <td style="border-right:none;">25% =</td>
-          <td class="rate" multiplier="0.25" style="border-left:none;">
-            mL/hr
-          </td>
-        </tr>
-        <tr>
-          <td style="text-align: right">200-249</td>
-          <td style="border-right:none;">50% =</td>
-          <td class="rate" multiplier="0.5" style="border-left:none;">mL/hr</td>
-          <td style="border-right:none;">
-            50% =
-          </td>
-          <td class="rate" multiplier="0.5" style="border-left:none;">mL/hr</td>
-        </tr>
-        <tr>
-          <td style="text-align: right">150-199</td>
-          <td style="border-right:none;">25% =</td>
-          <td class="rate" multiplier="0.25" style="border-left:none;">
-            mL/hr
-          </td>
-          <td style="border-right:none;">75% =</td>
-          <td class="rate" multiplier="0.75" style="border-left:none;">
-            mL/hr
-          </td>
-        </tr>
-        <tr>
-          <td style="text-align: right">&lt; 150</td>
-          <td style="border-right:none;">0% =</td>
-          <td class="rate" multiplier="0" style="border-left:none;">mL/hr</td>
-          <td style="border-right:none;">100% =</td>
-          <td class="rate" multiplier="1" style="border-left:none;">mL/hr</td>
-        </tr>
-      </table>
-    </div>
   </body>
 </html>
