@@ -11,8 +11,8 @@
     <meta name="author" content="Corey White" />
     <style>
       * {
-        font-family: arial, sans-serif;
         color: hsl(0, 0%, 17%);
+        font-family: arial, sans-serif;
       }
       html {
         background-color: hsl(210, 15%, 98%);
@@ -25,42 +25,41 @@
         flex-flow: column nowrap;
         width: 35rem;
         margin: 2rem auto auto;
-        box-shadow: 0 2px 4px hsla(0, 0%, 0%, 0.2);
         padding: 0 2rem 1rem;
         border-radius: 0.25rem;
+        box-shadow: 0 2px 4px hsla(0, 0%, 0%, 0.2);
         background-color: white;
       }
-      #inputAndResultsContainer {
-        display: flex;
-      }
       #inputContainer {
-        width: 33.3%;
-      }
-      #resultsContainer {
         display: flex;
         justify-content: center;
-        width: 66.7%;
       }
       #tableContainer {
+        width: 100%;
         margin: 1rem auto 1rem;
         border: 1px solid lightgray;
         border-radius: 0.25rem;
         background-color: white;
-        width: 100%;
       }
       #calculateButton {
         height: 3rem;
+        margin: 1rem;
+        padding: 0.75rem;
         border-style: none;
         border-radius: 0.25rem;
-        padding: 0.75rem;
         background: hsl(207, 100%, 27%);
         color: white;
         font-size: 1rem;
         cursor: pointer;
-        margin: 1rem 0;
       }
       #maxLabel {
         padding-left: 0.5rem;
+      }
+      .rate {
+        width: 4rem;
+        white-space: nowrap;
+        text-align: right;
+        border-left: none;
       }
       .warningLabel {
         border-radius: 0.25rem;
@@ -72,68 +71,39 @@
         align-items: center;
         margin: 0.5rem 0;
       }
-      h1 {
-        width: 7rem;
-        text-align: right;
-      }
       h3 {
-        font-size: 1.5rem;
         margin: 1rem 0.5rem;
-      }
-      h2 {
-        padding: 1rem 0;
-        background-color: hsl(210, 15%, 98%);
-        margin: 0;
-        text-align: center;
-        color: hsl(220, 10%, 32%);
+        font-size: 1.5rem;
       }
       p {
-        color: hsl(0, 0%, 45%);
         margin: 0.25rem 0 1rem 0;
-        width: 8rem;
+        color: hsl(0, 0%, 45%);
       }
       input {
-        padding: 0;
         width: 4rem;
-        font-size: 1rem;
+        padding: 0;
         text-align: right;
+        font-size: 1rem;
       }
       table {
-        vertical-align: middle;
-        border-collapse: collapse;
-        margin: 0 auto;
         width: 100%;
+        vertical-align: middle;
+        margin: 0 auto;
         border: none;
       }
       th {
+        padding: 0.25rem;
+        border: none;
         background-color: hsl(210, 15%, 98%);
         text-transform: uppercase;
         text-align: center;
         font-weight: 300;
-        border: none;
-        padding: 0.25rem;
       }
       td {
-        text-align: right;
         padding: 4px;
         border: none;
         border-radius: 0.25rem;
-      }
-      .rate {
-        width: 4rem;
-        white-space: nowrap;
         text-align: right;
-        border-left: none;
-      }
-      .resultColumn {
-        display: flex;
-        flex-flow: column wrap;
-        width: 32%;
-        text-align: right;
-        justify-content: flex-start;
-        border: 1px solid lightgray;
-        border-radius: 0.25rem;
-        margin: 1rem;
       }
     </style>
   </head>
@@ -148,37 +118,18 @@
           />
           <h3>DKA IV Fluids Calculator</h3>
         </header>
-        <div id="inputAndResultsContainer">
-          <div id="inputContainer">
-            <label for="totalRateInput">
-              Total Rate*:
-            </label>
+        <div id="inputContainer">
+          <label for="totalRateInput">
+            Total Rate*:
             <br />
             <input type="text" id="totalRateInput" />
-            ml/hr
+            mL/hr
             <br />
             <p id="maxLabel">*max: 175 mL/hr</p>
-            <label for="glucoseInput">
-              Blood Glucose:
-            </label>
-            <br />
-            <input type="text" id="glucoseInput" />
-            mg/dL
-            <br />
-            <button id="calculateButton" type="button" onclick="handleClick()">
-              Calculate
-            </button>
-          </div>
-          <div id="resultsContainer">
-            <div class="resultColumn">
-              <h2>NaCl 0.9%</h2>
-              <h1 id="salineResult">- <br />mL/hr</h1>
-            </div>
-            <div class="resultColumn">
-              <h2>D10 NS</h2>
-              <h1 id="dextroseResult">- <br />mL/hr</h1>
-            </div>
-          </div>
+          </label>
+          <button id="calculateButton" type="button" onclick="handleClick()">
+            Calculate
+          </button>
         </div>
         <div id="tableContainer">
           <table>
@@ -266,78 +217,25 @@
     </main>
     <script>
       var rate = document.getElementById("totalRateInput");
-      var glucose = document.getElementById("glucoseInput");
       rate.addEventListener("keyup", function(event) {
         if (event.keyCode === 13) {
           event.preventDefault();
           document.getElementById("calculateButton").click();
         }
       });
-      glucose.addEventListener("keyup", function(event) {
-        if (event.keyCode === 13) {
-          event.preventDefault();
-          document.getElementById("calculateButton").click();
-        }
-      });
       function handleClick() {
-        var glucoseInput = document.getElementById("glucoseInput").value;
+        document.getElementById("maxLabel").classList.remove("warningLabel");
         var totalRateInput = document.getElementById("totalRateInput").value;
         var rates = document.getElementsByClassName("rate");
-        var bg = "hsl(210, 37%, 90%)";
         for (i = 0; i < rates.length; i++) {
-          if (totalRateInput && totalRateInput < 176 && glucoseInput) {
+          if (totalRateInput && totalRateInput < 176) {
             rates[i].innerHTML =
               rates[i].getAttribute("data-multiplier") * totalRateInput +
               " mL/hr";
-          } else {
+          } else if (totalRateInput > 175) {
             rates[i].innerHTML = " mL/hr";
+            document.getElementById("maxLabel").className = "warningLabel";
           }
-        }
-        function resetStyles() {
-          var rows = document.getElementsByTagName("TR");
-          document.getElementById("maxLabel").classList.remove("warningLabel");
-          document.getElementById("salineResult").innerHTML = "- mL/hr";
-          document.getElementById("dextroseResult").innerHTML = "- mL/hr";
-          for (i = 0; i < rows.length; i++) {
-            rows[i].style.backgroundColor = "white";
-            rows[i].style.fontWeight = "400";
-            rows[i].classList.remove("resultRow");
-          }
-        }
-        function highlightAndBold(row) {
-          resetStyles();
-          var resultRow = document.getElementById(row);
-          resultRow.className = "resultRow";
-          resultRow.style.backgroundColor = bg;
-          resultRow.style.fontWeight = "600";
-          document.getElementById(
-            "salineResult"
-          ).innerHTML = document.querySelectorAll(
-            ".resultRow .saline"
-          )[0].innerHTML;
-          document.getElementById(
-            "dextroseResult"
-          ).innerHTML = document.querySelectorAll(
-            ".resultRow .dextrose"
-          )[0].innerHTML;
-        }
-        if (totalRateInput < 176 && glucoseInput) {
-          if (glucoseInput >= 300) {
-            highlightAndBold(">=300");
-          } else if (glucoseInput >= 250) {
-            highlightAndBold("250-299");
-          } else if (glucoseInput >= 200) {
-            highlightAndBold("200-249");
-          } else if (glucoseInput >= 150) {
-            highlightAndBold("150-199");
-          } else if (glucoseInput > 0) {
-            highlightAndBold("< 150");
-          }
-        } else if (totalRateInput > 175) {
-          resetStyles();
-          document.getElementById("maxLabel").className = "warningLabel";
-        } else {
-          resetStyles();
         }
       }
     </script>
